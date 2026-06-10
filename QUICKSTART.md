@@ -12,14 +12,21 @@ python run_v1.py run --jd data/sample/jd.txt --candidates data/sample/candidates
 python run_v1.py validate --file outputs/final/ranked_output.csv
 ```
 
-## 3. Inspect Outputs
+## 3. Run Tests
+
+```bash
+python -m unittest discover -v
+```
+
+## 4. Inspect Outputs
 
 - `outputs/final/ranked_output.csv`
 - `outputs/final/audit_report.json`
 
-## 4. Replace Sample Data
+Generated outputs are intentionally ignored by Git. Regenerate them locally with the sample command above.
+
+## 5. Replace Sample Data
 
 Put the official challenge JD and candidate files under `data/raw/`, then point the command at those paths.
 
 Do not assume the sample output schema is the official schema. Once the official format is known, update `src/verity_ranker/validate.py`.
-

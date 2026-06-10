@@ -1,23 +1,26 @@
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
 
 from verity_ranker.pipeline import run_pipeline
 
 
 class V1PipelineTest(unittest.TestCase):
     def test_sample_pipeline_runs(self):
-        root = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "ranked_output.csv"
             report = Path(tmp) / "audit_report.json"
             result = run_pipeline(
-                jd_path=root / "data" / "sample" / "jd.txt",
-                candidates_dir=root / "data" / "sample" / "candidates",
+                jd_path=ROOT / "data" / "sample" / "jd.txt",
+                candidates_dir=ROOT / "data" / "sample" / "candidates",
                 output_path=output,
                 report_path=report,
-                weights_path=root / "configs" / "scoring_weights.json",
+                weights_path=ROOT / "configs" / "scoring_weights.json",
             )
             self.assertEqual(result.candidate_count, 4)
             self.assertTrue(output.exists())
@@ -28,4 +31,3 @@ class V1PipelineTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
