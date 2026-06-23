@@ -1,4 +1,4 @@
-# PRISM — Verity Ranker
+# PRISM — Proof driven Ranking and Intelligent Selection Model
 
 **A multi-layer, evidence-backed hiring pipeline that ranks 100,000 candidates against a job description — and proves its rankings aren't just keyword matching.**
 
