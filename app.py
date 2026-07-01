@@ -591,7 +591,7 @@ def render_roster_card(card: dict, ledger_entry: Optional[dict], expanded: bool 
 
 # ── Sidebar / input ──────────────────────────────────────────────────────────
 
-def render_sidebar() -> None:
+def render_sidebar() -> bool:
     with st.sidebar:
         st.markdown(
             f"<div style='text-align:center;padding:.4rem 0 1rem'>"
@@ -607,6 +607,9 @@ def render_sidebar() -> None:
         spectrum_rule(3)
         st.markdown("### Precomputed Submission Viewer\n\nViewing results from `submission/ranked_output.csv` and `cache/candidate_features.jsonl`.")
         st.info("The pipeline is now running in Viewer mode for the pre-calculated Hackathon submission.")
+        st.divider()
+        run_btn = st.button("Run PRISM", type="primary", use_container_width=True)
+    return run_btn
 
 
 # ── Pipeline runner ───────────────────────────────────────────────────────────
@@ -1064,15 +1067,25 @@ def main() -> None:
     )
     spectrum_rule(6)
 
-    render_sidebar()
+    run_btn = render_sidebar()
 
-    result = load_precomputed_results()
+    if "pipeline_result" not in st.session_state:
+        st.session_state.pipeline_result = None
+
+    if run_btn:
+        with st.spinner("Loading precomputed results..."):
+            st.session_state.pipeline_result = load_precomputed_results()
+            if st.session_state.pipeline_result is None:
+                st.error("Error: Could not load submission/ranked_output.csv or cache/candidate_features.jsonl. Ensure files exist.")
+                st.stop()
+
+    result = st.session_state.pipeline_result
     if result is None:
         st.markdown(
             "<div class='prism-card' style='text-align:center;padding:2.6rem 1.5rem'>"
-            "<div style='font-family:Space Grotesk,sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink)'>Files missing</div>"
+            "<div style='font-family:Space Grotesk,sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink)'>Nothing to refract yet</div>"
             "<div style='font-family:Source Serif 4,serif;font-size:.88rem;color:var(--ink-muted);margin-top:.5rem'>"
-            "Ensure submission/ranked_output.csv and cache/candidate_features.jsonl exist.</div></div>",
+            "Click <b>Run PRISM</b> in the sidebar to load the precomputed Hackathon submission.</div></div>",
             unsafe_allow_html=True,
         )
         return
